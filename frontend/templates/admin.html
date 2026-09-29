@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — {{ brand.name }}{% endblock %}
+
+{% block content %}
+<section class="container-fibrea py-12 md:py-16">
+  <p class="fibrea-eyebrow">Administración</p>
+  <h1 class="fibrea-display mt-3 text-5xl md:text-6xl">Pedidos</h1>
+
+  <div class="mt-10 grid gap-4 sm:grid-cols-3">
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label">Pedidos</p>
+      <strong id="totalOrders" class="mt-2 block text-3xl font-medium">0</strong>
+    </div>
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label">Pendientes</p>
+      <strong id="pendingOrders" class="mt-2 block text-3xl font-medium">0</strong>
+    </div>
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label">Ventas</p>
+      <strong id="salesTotal" class="mt-2 block text-3xl font-medium">$0.00</strong>
+    </div>
+  </div>
+
+  <div class="fibrea-card mt-8 overflow-x-auto">
+    <table class="w-full min-w-[900px] text-left text-sm">
+      <thead class="border-b border-black/10">
+        <tr>
+          <th class="p-5">Pedido</th>
+          <th class="p-5">Cliente</th>
+          <th class="p-5">WhatsApp</th>
+          <th class="p-5">Ciudad</th>
+          <th class="p-5">Total</th>
+          <th class="p-5">Estado</th>
+          <th class="p-5">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Detalle del pedido -->
+<div id="orderModal" class="modal-backdrop fixed inset-0 z-50 hidden">
+  <div class="fibrea-card" style="max-width: 600px;">
+    <button id="closeOrderModal" class="icon-btn modal-close" aria-label="Cerrar"><i data-lucide="x"></i></button>
+    <div class="p-7 md:p-10">
+      <p class="fibrea-eyebrow">Detalle del pedido</p>
+      <h2 id="orderModalTitle" class="fibrea-display mt-3 text-4xl"></h2>
+      <div id="orderModalBody" class="mt-6 space-y-3 text-sm"></div>
+      <div id="orderModalItems" class="mt-6 space-y-2"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

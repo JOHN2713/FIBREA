@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Descubre — {{ brand.name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero tone tone-hoja">
+  <div class="container-fibrea relative">
+    <p class="fibrea-eyebrow">Descubre</p>
+    <h1 class="mt-4">Abacá</h1>
+    <p class="fibrea-display mt-2 max-w-lg text-2xl italic opacity-90 md:text-3xl">Una fibra extraordinaria que nace de nuestra tierra.</p>
+  </div>
+</section>
+
+<nav class="sticky top-[76px] z-30 border-b border-[var(--border)] backdrop-blur" style="background: rgba(244,239,231,.95)" aria-label="Secciones">
+  <div class="container-fibrea tabs !border-0">
+    <a href="#historia" class="tab">Nuestra historia</a>
+    {% for material in brand.materials %}<a href="#{{ material.slug }}" class="tab">{{ material.name }}</a>{% endfor %}
+    <a href="#proceso" class="tab">Proceso</a>
+    <a href="#cuidados" class="tab">Cuidados</a>
+    <a href="#envios" class="tab">Envíos</a>
+  </div>
+</nav>
+
+<section id="historia" class="container-fibrea scroll-mt-40 py-16 md:py-20">
+  <div class="grid items-center gap-10 md:grid-cols-2">
+    <div class="tone tone-hoja aspect-[4/3] rounded-md">
+      <img src="{{ url_for('static', filename='images/brand/historia.webp') }}" alt="Plantación de abacá en Ecuador" loading="lazy" onerror="this.remove()">
+    </div>
+    <div>
+      <p class="fibrea-eyebrow">Nuestra historia</p>
+      <h2 class="fibrea-display mt-4 text-4xl md:text-5xl">{{ brand.story_title }}</h2>
+      <p class="fibrea-muted mt-6">{{ brand.story }}</p>
+      <p class="mt-6 border-l-2 border-[var(--color-abaca)] pl-4 text-sm italic">{{ brand.mission }}</p>
+      <a href="/productos" class="fibrea-btn fibrea-btn-dark mt-8">Conoce la colección <i data-lucide="arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="border-y border-[var(--border)] bg-[var(--surface)] py-16 md:py-20">
+  <div class="container-fibrea grid gap-14">
+    {% for material in brand.materials %}
+    <article id="{{ material.slug }}" class="grid scroll-mt-40 items-center gap-8 md:grid-cols-2">
+      <div class="tone tone-{{ material.tone }} aspect-[16/10] rounded-md {% if loop.index is even %}md:order-2{% endif %}">
+        <img src="{{ url_for('static', filename='images/brand/' ~ material.slug ~ '.webp') }}" alt="{{ material.name }}" loading="lazy" onerror="this.remove()">
+      </div>
+      <div>
+        <p class="fibrea-label fibrea-muted">0{{ loop.index }}</p>
+        <h3 class="fibrea-display mt-2 text-4xl">{{ material.name }}</h3>
+        <p class="fibrea-display mt-1 text-xl italic">{{ material.short }}</p>
+        <p class="fibrea-muted mt-4 max-w-md">{{ material.text }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="proceso" class="container-fibrea scroll-mt-40 py-16 md:py-20">
+  <h2 class="section-title">De la planta a tu espacio.</h2>
+  <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {% for step in brand.process %}
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label text-[var(--color-amazonia)]">{{ step.step }}</p>
+      <h3 class="fibrea-display mt-3 text-2xl">{{ step.name }}</h3>
+      <p class="fibrea-muted mt-2 text-sm">{{ step.text }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="container-fibrea grid gap-6 pb-20 md:grid-cols-2">
+  <div id="cuidados" class="fibrea-card scroll-mt-40 p-8">
+    <p class="fibrea-eyebrow">Guía de cuidados</p>
+    <ul class="mt-5 grid gap-3 text-sm">
+      {% for tip in brand.care %}<li class="flex gap-3"><i data-lucide="leaf" class="mt-1 flex-none text-[var(--color-hoja)]"></i>{{ tip }}</li>{% endfor %}
+    </ul>
+  </div>
+  <div id="envios" class="fibrea-card scroll-mt-40 p-8">
+    <p class="fibrea-eyebrow">Envíos</p>
+    <p class="mt-5 text-sm">{{ brand.shipping.text }}</p>
+    <p class="fibrea-muted mt-3 text-sm">Costo de envío: ${{ "%.2f"|format(brand.shipping.cost) }}. Gratis en pedidos desde ${{ "%.2f"|format(brand.shipping.free_from) }}.</p>
+    <p class="fibrea-muted mt-3 text-sm">Cada pieza viaja protegida en un empaque especial de papel de abacá.</p>
+  </div>
+</section>
+{% endblock %}

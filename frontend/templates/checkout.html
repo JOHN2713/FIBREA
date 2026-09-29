@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout — {{ brand.name }}{% endblock %}
+
+{% block content %}
+<section class="container-fibrea py-10 md:py-14">
+  <div class="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
+    <div>
+      <div class="stepper" id="stepper">
+        <span class="step is-active" data-step="1"><b>1</b> Envío</span>
+        <span class="line"></span>
+        <span class="step" data-step="2"><b>2</b> Pago</span>
+        <span class="line"></span>
+        <span class="step" data-step="3"><b>3</b> Confirmación</span>
+      </div>
+
+      <div id="emptyCheckout" class="fibrea-card mt-8 p-10 text-center" hidden>
+        <p class="fibrea-display text-3xl">Tu carrito está vacío.</p>
+        <a href="/productos" class="fibrea-btn fibrea-btn-dark mt-6">Ver la colección</a>
+      </div>
+
+      <form id="checkoutForm" class="mt-8" novalidate>
+        <!-- Paso 1: envío -->
+        <fieldset data-step-panel="1" class="fibrea-card grid gap-4 p-6 md:grid-cols-2 md:p-8">
+          <legend class="sr-only">Información de envío</legend>
+          <h1 class="fibrea-display text-3xl md:col-span-2">Información de envío</h1>
+          <label class="field md:col-span-2"><span>Nombre completo *</span>
+            <input class="fibrea-input" name="customer_name" autocomplete="name" required></label>
+          <label class="field"><span>Correo electrónico *</span>
+            <input class="fibrea-input" type="email" name="email" autocomplete="email" required></label>
+          <label class="field"><span>Teléfono / WhatsApp *</span>
+            <input class="fibrea-input" type="tel" name="phone" autocomplete="tel" placeholder="09XXXXXXXX" required></label>
+          <label class="field md:col-span-2"><span>Dirección *</span>
+            <input class="fibrea-input" name="address" autocomplete="street-address" required></label>
+          <label class="field"><span>Ciudad *</span>
+            <input class="fibrea-input" name="city" autocomplete="address-level2" required></label>
+          <label class="field"><span>Referencia (opcional)</span>
+            <input class="fibrea-input" name="reference"></label>
+          <label class="field md:col-span-2"><span>Notas del pedido (opcional)</span>
+            <textarea class="fibrea-input min-h-24" name="notes" placeholder="Ej.: es un regalo, horario de entrega…"></textarea></label>
+          <button type="button" class="fibrea-btn fibrea-btn-dark md:col-span-2" data-next>Continuar al pago <i data-lucide="arrow-right"></i></button>
+        </fieldset>
+
+        <!-- Paso 2: pago -->
+        <fieldset data-step-panel="2" class="fibrea-card grid gap-4 p-6 md:p-8" hidden>
+          <legend class="sr-only">Método de pago</legend>
+          <h2 class="fibrea-display text-3xl">Método de pago</h2>
+          {% for method in brand.payment_methods %}
+          <label class="option-card">
+            <input type="radio" name="payment_method" value="{{ method.id }}" {% if loop.first %}checked{% endif %} class="accent-[var(--color-noche)]">
+            <span>
+              <strong class="block text-sm font-medium">{{ method.name }}</strong>
+              <small class="fibrea-muted">{{ method.text }}</small>
+            </span>
+          </label>
+          {% endfor %}
+          <p class="fibrea-muted flex items-center gap-2 text-xs"><i data-lucide="lock"></i> Prototipo: no se realiza ningún cobro real. Coordinamos el pago por WhatsApp.</p>
+          <div class="grid gap-3 sm:grid-cols-[auto_1fr]">
+            <button type="button" class="fibrea-btn fibrea-btn-outline" data-prev>Volver</button>
+            <button type="submit" class="fibrea-btn fibrea-btn-dark" id="submitOrder">Confirmar pedido · <span id="payTotal">$0.00</span></button>
+          </div>
+          <p id="checkoutMessage" class="text-sm text-[#b4533f]" role="alert"></p>
+        </fieldset>
+      </form>
+    </div>
+
+    <!-- Resumen -->
+    <aside class="fibrea-card h-fit p-6 md:p-8 lg:sticky lg:top-24">
+      <h2 class="fibrea-display text-3xl">Resumen</h2>
+      <div id="checkoutItems" class="mt-5 grid gap-4"></div>
+      <div class="mt-5 border-t border-[var(--border)] pt-4">
+        <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal"></span></div>
+        <div class="summary-row"><span>Envío</span><span id="sumShipping"></span></div>
+        <div class="summary-row summary-total"><span>Total</span><strong id="sumTotal"></strong></div>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
+{% endblock %}

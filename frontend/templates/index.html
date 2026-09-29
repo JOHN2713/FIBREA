@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+  <div class="container-fibrea hero-grid">
+    <div>
+      <h1>Naturaleza<br>ecuatoriana<br>hecha con alma.</h1>
+      <p class="mt-6 max-w-md text-base opacity-90 md:text-lg">{{ brand.hero_subtitle }}</p>
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <a href="/descubre" class="fibrea-btn fibrea-btn-light">Descubre Fibrea</a>
+        <a href="/productos" class="fibrea-btn fibrea-btn-ghost-light">Explorar colección</a>
+      </div>
+      <p class="hero-origin mt-14">{{ brand.origin }}</p>
+    </div>
+    <div class="hero-art">
+      <img src="{{ url_for('static', filename='images/iso-simpl.png') }}" alt="Isotipo de {{ brand.name }}: fibra de abacá, follaje y rosa ecuatoriana" width="1024" height="1536" loading="eager">
+    </div>
+  </div>
+</section>
+
+<!-- Materiales -->
+<section class="container-fibrea py-16 md:py-20">
+  <div class="mb-8 flex items-end justify-between gap-4">
+    <h2 class="section-title">Conoce la naturaleza que nos inspira.</h2>
+    <a href="/descubre" class="link-arrow">Explorar más <i data-lucide="arrow-right"></i></a>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {% for material in brand.materials %}
+    <a href="/descubre#{{ material.slug }}" class="material-card">
+      <div class="tone tone-{{ material.tone }}">
+        <img src="{{ url_for('static', filename='images/brand/' ~ material.slug ~ '.webp') }}" alt="{{ material.name }}" loading="lazy" onerror="this.remove()">
+      </div>
+      <div class="flex flex-1 items-end justify-between gap-3 p-5">
+        <div>
+          <h3>{{ material.name }}</h3>
+          <p class="fibrea-muted mt-1 text-xs">{{ material.short }}</p>
+        </div>
+        <span class="circle-arrow"><i data-lucide="arrow-right"></i></span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Colección -->
+<section class="border-y border-[var(--border)] bg-[var(--surface)] py-16 md:py-20">
+  <div class="container-fibrea">
+    <div class="mb-8 flex items-end justify-between gap-4">
+      <div>
+        <h2 class="section-title">Fibrea Collection</h2>
+        <p class="fibrea-muted mt-2 text-sm">Piezas de naturaleza para habitar tus espacios.</p>
+      </div>
+      <a href="/productos" class="link-arrow">Ver toda la colección <i data-lucide="arrow-right"></i></a>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {% for product in products %}
+      <a href="/productos?product={{ product.id }}" class="collection-card">
+        <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy" width="600" height="800">
+        <div class="caption">
+          <div>
+            <strong>{{ product.name }}</strong>
+            {% if product.price is not none %}<p class="mt-1 text-xs opacity-90">${{ "%.2f"|format(product.price) }}</p>{% endif %}
+          </div>
+          <span class="circle-arrow"><i data-lucide="arrow-right"></i></span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Crea tu Fibrea -->
+<section class="container-fibrea py-16 md:py-24">
+  <div class="grid items-center gap-10 md:grid-cols-[1fr_1.1fr]">
+    <div>
+      <p class="fibrea-eyebrow">Con inteligencia artificial</p>
+      <h2 class="fibrea-display mt-4 text-5xl md:text-6xl">Crea tu Fibrea</h2>
+      <p class="fibrea-display mt-1 text-3xl italic">Hazla tuya.</p>
+      <p class="fibrea-muted mt-6 max-w-md">
+        Elige una pieza, sube una foto de tu sala, comedor u oficina y visualiza cómo
+        se vería en tu espacio antes de comprarla.
+      </p>
+      <ol class="mt-8 grid gap-4 text-sm">
+        <li class="flex gap-4"><span class="fibrea-label text-[var(--color-amazonia)]">01</span> Elige la pieza de la colección.</li>
+        <li class="flex gap-4"><span class="fibrea-label text-[var(--color-amazonia)]">02</span> Sube una foto de tu espacio.</li>
+        <li class="flex gap-4"><span class="fibrea-label text-[var(--color-amazonia)]">03</span> Recibe una imagen realista en segundos.</li>
+      </ol>
+      <a href="/mockup" class="fibrea-btn fibrea-btn-dark mt-9">Ver en mi espacio <i data-lucide="arrow-right"></i></a>
+    </div>
+    {% if products %}
+    <div class="relative">
+      <img src="{{ products[1].image if products|length > 1 else products[0].image }}" alt="Pieza de la colección en un espacio" class="aspect-[4/3] w-full rounded-md object-cover" loading="lazy">
+      <div class="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-md bg-white/90 p-3 text-xs backdrop-blur sm:right-auto">
+        <i data-lucide="sparkles" class="text-[var(--color-amazonia)]"></i>
+        Visualízala en tu espacio antes de comprar.
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Beneficios -->
+<section class="border-y border-[var(--border)] py-10">
+  <div class="container-fibrea grid grid-cols-2 gap-8 md:grid-cols-4">
+    {% for benefit in brand.benefits %}
+    <div class="benefit">
+      <i data-lucide="{{ {'leaf': 'leaf', 'hand': 'hand-heart', 'gift': 'gift', 'book': 'book-open'}[benefit.icon] }}"></i>
+      <strong class="font-medium">{{ benefit.title }}</strong>
+      <span class="fibrea-muted">{{ benefit.text }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Atelier -->
+<section id="atelier" class="container-fibrea scroll-mt-24 py-16 md:py-20">
+  <div class="mb-8 flex items-end justify-between gap-4">
+    <div>
+      <h2 class="section-title">Fibrea Atelier</h2>
+      <p class="fibrea-muted mt-2 text-sm">Para momentos y espacios que necesitan algo único.</p>
+    </div>
+    <a href="https://wa.me/{{ brand.whatsapp }}?text={{ ('Hola, quiero cotizar un proyecto con Fibrea Atelier.')|urlencode }}" target="_blank" rel="noopener" class="link-arrow">Cotizar un proyecto <i data-lucide="arrow-right"></i></a>
+  </div>
+  <div class="grid gap-4 md:grid-cols-3">
+    {% for service in brand.atelier %}
+    <a href="https://wa.me/{{ brand.whatsapp }}?text={{ ('Hola, me interesa Fibrea Atelier para ' ~ service.name|lower ~ '.')|urlencode }}" target="_blank" rel="noopener"
+       class="tone tone-{{ service.tone }} flex aspect-[16/10] items-end rounded-md p-5 text-white no-underline">
+      <div class="relative flex w-full items-end justify-between gap-3">
+        <div>
+          <strong class="fibrea-display block text-3xl font-normal">{{ service.name }}</strong>
+          <span class="text-xs opacity-90">{{ service.text }}</span>
+        </div>
+        <span class="circle-arrow"><i data-lucide="arrow-right"></i></span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

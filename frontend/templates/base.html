@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ brand.name }}{% endblock %}</title>
+  <meta name="description" content="{{ brand.tagline }} {{ brand.hero_subtitle }}">
+  <link rel="icon" href="{{ url_for('static', filename='images/iso-simpl.png') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<header class="fibrea-nav {% if active == 'inicio' %}is-dark{% endif %}" id="siteNav">
+  <nav class="container-fibrea flex min-h-[76px] items-center justify-between gap-6">
+    <a href="/" class="fibrea-wordmark" aria-label="{{ brand.name }} — inicio">
+      <span>{{ brand.short_name }}</span>
+      <small>ATELIER</small>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+      <a href="/descubre" class="fibrea-nav-link {% if active == 'descubre' %}is-active{% endif %}">Descubre</a>
+      <a href="/productos" class="fibrea-nav-link {% if active == 'coleccion' %}is-active{% endif %}">Fibrea Collection</a>
+      <a href="/mockup" class="fibrea-nav-link {% if active == 'crea' %}is-active{% endif %}">Crea tu Fibrea</a>
+      <a href="/#atelier" class="fibrea-nav-link">Fibrea Atelier</a>
+    </div>
+
+    <div class="flex items-center gap-1">
+      <a href="/productos" class="icon-btn" aria-label="Buscar en la colección"><i data-lucide="search"></i></a>
+      <button type="button" class="icon-btn relative" id="cartButton" aria-label="Abrir carrito">
+        <i data-lucide="shopping-bag"></i>
+        <span id="cartCount" class="cart-count" hidden>0</span>
+      </button>
+      <button type="button" class="icon-btn md:hidden" id="menuButton" aria-label="Abrir menú" aria-expanded="false">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Carrito lateral (compartido por todas las páginas) -->
+<div id="cartDrawer" class="drawer" hidden>
+  <div class="drawer-backdrop" data-close-cart></div>
+  <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <div class="flex items-center justify-between border-b border-[var(--border)] pb-5">
+      <h2 id="cartTitle" class="fibrea-display text-4xl">Tu carrito</h2>
+      <button type="button" class="icon-btn" data-close-cart aria-label="Cerrar carrito"><i data-lucide="x"></i></button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-auto py-5"></div>
+    <div id="cartSummary" class="border-t border-[var(--border)] pt-5">
+      <div class="summary-row"><span>Subtotal</span><span id="cartSubtotal">$0.00</span></div>
+      <div class="summary-row"><span>Envío</span><span id="cartShipping">$0.00</span></div>
+      <p id="cartFreeShipping" class="fibrea-muted text-xs"></p>
+      <div class="summary-row summary-total"><span>Total</span><strong id="cartTotal">$0.00</strong></div>
+      <a href="/checkout" id="checkoutButton" class="fibrea-btn fibrea-btn-dark mt-5 w-full">Finalizar compra <i data-lucide="arrow-right"></i></a>
+      <button type="button" class="mt-3 w-full text-center text-xs uppercase tracking-[.14em] fibrea-muted" data-close-cart>Seguir comprando</button>
+    </div>
+  </aside>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<a class="whatsapp-float" href="https://wa.me/{{ brand.whatsapp }}?text={{ ('Hola ' ~ brand.name ~ ', quisiera más información.')|urlencode }}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <i data-lucide="message-circle"></i>
+</a>
+
+<footer class="site-footer">
+  <div class="container-fibrea grid gap-10 py-16 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <div>
+      <div class="fibrea-wordmark is-light"><span>{{ brand.short_name }}</span><small>ATELIER</small></div>
+      <p class="mt-5 max-w-xs text-sm opacity-80">{{ brand.tagline }} {{ brand.hero_subtitle }}</p>
+      <p class="mt-5 text-[10px] uppercase tracking-[.26em] opacity-60">{{ brand.origin }} ——</p>
+    </div>
+    <div>
+      <p class="footer-title">Explora</p>
+      <a href="/descubre">Descubre</a>
+      <a href="/productos">Fibrea Collection</a>
+      <a href="/mockup">Crea tu Fibrea</a>
+      <a href="/#atelier">Fibrea Atelier</a>
+    </div>
+    <div>
+      <p class="footer-title">Ayuda</p>
+      <a href="/descubre#cuidados">Guía de cuidados</a>
+      <a href="/descubre#envios">Envíos</a>
+      <a href="https://wa.me/{{ brand.whatsapp }}" target="_blank" rel="noopener">Atención por WhatsApp</a>
+    </div>
+    <div>
+      <p class="footer-title">Contacto</p>
+      <span>{{ brand.email }}</span>
+      <span>+{{ brand.whatsapp }}</span>
+      <a href="{{ brand.instagram }}" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
+  <div class="container-fibrea flex flex-col justify-between gap-2 border-t border-white/10 py-6 text-[11px] opacity-60 md:flex-row">
+    <span>© {{ brand.name }} · {{ brand.origin }}</span>
+    <span>Prototipo MVP</span>
+  </div>
+</footer>
+
+<script>window.FIBREA = {{ {"whatsapp": brand.whatsapp, "shipping": brand.shipping}|tojson }};</script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

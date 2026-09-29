@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido #{{ order.id }} — {{ brand.name }}{% endblock %}
+
+{% block content %}
+{% set payment = brand.payment_methods|selectattr('id', 'equalto', order.payment_method)|first %}
+<section class="container-fibrea py-10 md:py-14">
+  <div class="grid overflow-hidden rounded-[10px] border border-[var(--border)] bg-[var(--surface)] lg:grid-cols-[1.3fr_1fr]">
+    <div class="p-6 md:p-12">
+      <div class="stepper">
+        <span class="step is-done"><b>1</b> Envío</span><span class="line"></span>
+        <span class="step is-done"><b>2</b> Pago</span><span class="line"></span>
+        <span class="step is-active"><b>3</b> Confirmación</span>
+      </div>
+
+      <div class="mt-10 text-center">
+        <span class="mx-auto grid h-16 w-16 place-items-center rounded-full border border-[var(--color-tierra)]">
+          <i data-lucide="check" style="width:28px;height:28px"></i>
+        </span>
+        <h1 class="fibrea-display mt-6 text-4xl md:text-5xl">¡Tu pedido ha sido recibido!</h1>
+        <p class="fibrea-muted mx-auto mt-3 max-w-md text-sm">
+          Te escribiremos por WhatsApp a <strong>{{ order.phone }}</strong> para confirmar el pago y coordinar la entrega.
+        </p>
+        <p class="fibrea-label mt-6 fibrea-muted">Número de pedido</p>
+        <p class="text-xl font-medium">#FB-{{ order.created_at.strftime('%Y') }}-{{ '%05d'|format(order.id) }}</p>
+      </div>
+
+      <div class="mt-10 rounded-md border border-[var(--border)] bg-white/60 p-5 text-sm">
+        {% for item in order.items %}
+        <div class="summary-row"><span>{{ item.product.name if item.product else 'Producto #' ~ item.product_id }} × {{ item.quantity }}</span><span>${{ "%.2f"|format(item.subtotal) }}</span></div>
+        {% endfor %}
+        <div class="summary-row"><span>Envío</span><span>{% if order.shipping %}${{ "%.2f"|format(order.shipping) }}{% else %}Gratis{% endif %}</span></div>
+        <div class="summary-row summary-total"><span>Total</span><strong>${{ "%.2f"|format(order.total) }}</strong></div>
+        <div class="summary-row fibrea-muted"><span>Pago</span><span>{{ payment.name if payment else 'Por coordinar' }}</span></div>
+        <div class="summary-row fibrea-muted"><span>Entrega</span><span class="text-right">{{ order.address }}, {{ order.city }}</span></div>
+      </div>
+
+      <div class="mt-8 grid gap-3 sm:grid-cols-2">
+        <a id="whatsappLink" class="fibrea-btn fibrea-btn-dark" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Continuar por WhatsApp</a>
+        <a href="/productos" class="fibrea-btn fibrea-btn-outline">Seguir comprando</a>
+      </div>
+    </div>
+
+    <div class="tone tone-tierra relative hidden min-h-[420px] lg:block">
+      <img src="{{ url_for('static', filename='images/iso-simpl.png') }}" alt="" class="!object-contain p-10 mix-blend-lighten">
+      <div class="absolute bottom-8 left-8 right-8 rounded-md p-6 backdrop-blur" style="background: rgba(244,239,231,.9)">
+        <p class="fibrea-display text-2xl">Gracias por ser parte de esta historia.</p>
+        <p class="fibrea-muted mt-1 text-sm">{{ brand.tagline }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const orderData = {{ {"id": order.id, "total": order.total|float, "code": "FB-" ~ order.created_at.strftime('%Y') ~ "-" ~ ('%05d'|format(order.id)), "name": order.customer_name}|tojson }};
+  document.getElementById("whatsappLink").href = whatsappLink(
+    `Hola FIBREA ATELIER, soy ${orderData.name}. Acabo de realizar el pedido ${orderData.code} por un total de ${formatPrice(orderData.total)}. Quisiera coordinar el pago y la entrega.`
+  );
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.py[cod]
+backend/database/*.db
+.venv/
+venv/
+.vscode/
+.idea/
+instance/
+frontend/static/images/mockups/

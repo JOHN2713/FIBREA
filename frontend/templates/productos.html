@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Fibrea Collection — {{ brand.name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero tone tone-abaca !text-[var(--color-noche)]">
+  <div class="container-fibrea relative">
+    <p class="fibrea-eyebrow !text-[var(--color-noche)] opacity-70">Fibrea Collection</p>
+    <h1 class="mt-4">Nuestra colección</h1>
+    <p class="mt-3 max-w-lg text-sm">
+      Piezas que combinan rosas preservadas, follaje natural y papel de abacá en composiciones únicas.
+    </p>
+  </div>
+</section>
+
+<section class="container-fibrea py-10 md:py-14">
+  <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+    <div id="categories" class="flex flex-wrap gap-2" role="tablist" aria-label="Filtrar por categoría"></div>
+    <label class="relative w-full sm:w-72">
+      <span class="sr-only">Buscar</span>
+      <i data-lucide="search" class="fibrea-muted absolute left-3 top-1/2 -translate-y-1/2"></i>
+      <input id="searchInput" type="search" class="fibrea-input !pl-10" placeholder="Buscar en la colección">
+    </label>
+  </div>
+
+  <div id="productsGrid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite">
+    {% for i in range(3) %}<div class="ai-loading !aspect-[4/5]"></div>{% endfor %}
+  </div>
+  <p id="productsEmpty" class="fibrea-muted py-16 text-center" hidden>No encontramos piezas con ese criterio.</p>
+</section>
+
+<!-- Ficha de producto -->
+<div id="productModal" class="modal" hidden>
+  <div class="modal-backdrop absolute inset-0" data-close-product></div>
+  <div class="modal-panel grid md:grid-cols-[1.1fr_1fr]" role="dialog" aria-modal="true" aria-labelledby="modalName">
+    <button type="button" class="icon-btn modal-close" data-close-product aria-label="Cerrar"><i data-lucide="x"></i></button>
+    <div class="product-image !aspect-auto min-h-[340px] md:min-h-[620px]">
+      <img id="modalImage" src="" alt="" class="absolute inset-0">
+    </div>
+    <div class="flex flex-col p-6 md:p-10">
+      <p id="modalCategory" class="fibrea-muted text-[11px]"></p>
+      <h2 id="modalName" class="fibrea-display mt-2 text-4xl md:text-5xl"></h2>
+      <p id="modalPrice" class="mt-3 text-xl font-medium"></p>
+      <p id="modalDescription" class="fibrea-muted mt-4 text-sm"></p>
+
+      <div class="mt-7 flex items-center gap-3">
+        <div class="qty">
+          <button type="button" id="qtyMinus" aria-label="Quitar uno">−</button>
+          <span id="qtyValue">1</span>
+          <button type="button" id="qtyPlus" aria-label="Añadir uno">+</button>
+        </div>
+        <button type="button" id="addProduct" class="fibrea-btn fibrea-btn-dark flex-1">Añadir al carrito</button>
+      </div>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2">
+        <a id="mockupProduct" class="fibrea-btn fibrea-btn-outline"><i data-lucide="sparkles"></i> Ver en mi espacio</a>
+        <a id="whatsappProduct" class="fibrea-btn fibrea-btn-outline" target="_blank" rel="noopener"><i data-lucide="message-circle"></i> Consultar</a>
+      </div>
+
+      <div class="mt-8 grid grid-cols-2 gap-5 border-y border-[var(--border)] py-6 sm:grid-cols-4">
+        {% for benefit in brand.benefits %}
+        <div class="benefit">
+          <i data-lucide="{{ {'leaf': 'leaf', 'hand': 'hand-heart', 'gift': 'gift', 'book': 'book-open'}[benefit.icon] }}"></i>
+          <span class="text-[10px] leading-tight">{{ benefit.title }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="tabs mt-4" role="tablist">
+        <button type="button" class="tab is-active" data-tab="descripcion">Descripción</button>
+        <button type="button" class="tab" data-tab="cuidados">Cuidados</button>
+        <button type="button" class="tab" data-tab="envios">Envíos</button>
+      </div>
+      <div class="pt-4 text-sm">
+        <div data-panel="descripcion" id="modalLongDescription" class="fibrea-muted"></div>
+        <ul data-panel="cuidados" class="fibrea-muted grid gap-2" hidden>
+          {% for tip in brand.care %}<li>· {{ tip }}</li>{% endfor %}
+        </ul>
+        <div data-panel="envios" class="fibrea-muted" hidden>
+          {{ brand.shipping.text }} Costo ${{ "%.2f"|format(brand.shipping.cost) }}, gratis desde ${{ "%.2f"|format(brand.shipping.free_from) }}.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/products.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Crea tu Fibrea — {{ brand.name }}{% endblock %}
+
+{% block content %}
+<section class="container-fibrea py-12 md:py-16">
+  <div class="max-w-2xl">
+    <p class="fibrea-eyebrow">Crea tu Fibrea</p>
+    <h1 class="fibrea-display mt-3 text-5xl md:text-7xl">Hazla tuya.</h1>
+    <p class="fibrea-muted mt-4">
+      Elige una pieza de la colección, sube una foto de tu espacio y nuestra IA la integrará
+      de forma realista para que la veas antes de comprar.
+    </p>
+  </div>
+
+  <div id="aiNotice" class="notice mt-8" hidden>
+    <i data-lucide="info" class="mt-0.5 flex-none"></i>
+    <div>
+      <strong class="font-medium">La generación con IA aún no está configurada.</strong>
+      <p class="fibrea-muted mt-1">
+        Agrega <code>GEMINI_API_KEY</code> u <code>OPENAI_API_KEY</code> en el archivo <code>.env</code>
+        y reinicia el servidor. La guía paso a paso está en el README, sección «Generación de imágenes con IA».
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_1.15fr_1fr]">
+    <!-- 1. Producto -->
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label">1. Elige tu pieza</p>
+      <div id="mockupProducts" class="mt-5 grid gap-3">
+        <div class="ai-loading !aspect-[5/1]"></div>
+        <div class="ai-loading !aspect-[5/1]"></div>
+      </div>
+
+    </div>
+
+    <!-- 2. Espacio -->
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label">2. Sube tu espacio</p>
+      <label id="dropzone" class="dropzone mt-5">
+        <input id="spaceImage" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+        <div id="dropzoneEmpty">
+          <i data-lucide="image-plus" style="width:34px;height:34px" class="mx-auto fibrea-muted"></i>
+          <p class="fibrea-display mt-3 text-3xl">Sube una foto</p>
+          <p class="fibrea-muted mt-1 text-xs">Arrastra o haz clic · JPG, PNG o WEBP</p>
+          <p class="fibrea-muted mt-3 text-xs">Consejo: foto horizontal, con buena luz y la superficie libre.</p>
+        </div>
+        <img id="previewImage" alt="Vista previa de tu espacio" hidden>
+      </label>
+      <!-- Solo en celulares y tablets: abrir la cámara directamente -->
+      <div class="only-touch mt-3 grid grid-cols-2 gap-3">
+        <label class="fibrea-btn fibrea-btn-outline !w-full">
+          <input id="cameraInput" type="file" accept="image/*" capture="environment" class="sr-only">
+          <i data-lucide="camera"></i> Usar cámara
+        </label>
+        <label for="spaceImage" class="fibrea-btn fibrea-btn-outline !w-full"><i data-lucide="image"></i> Galería</label>
+      </div>
+      <p class="fibrea-label mt-7">3. Ajustes (opcional)</p>
+      <label class="field mt-4">
+        <span>Estilo del espacio</span>
+        <select id="styleSelect" class="fibrea-input">
+          <option value="">Mantener el de mi foto</option>
+          <option value="warm minimalist with natural materials">Minimalista cálido</option>
+          <option value="bohemian with plants and textiles">Bohemio</option>
+          <option value="modern luxury">Moderno elegante</option>
+          <option value="rustic with wood">Rústico</option>
+        </select>
+      </label>
+      <label class="field mt-4">
+        <span>Ubicación de la pieza</span>
+        <select id="placementSelect" class="fibrea-input">
+          <option value="">Donde mejor luzca</option>
+          <option value="on the center table">Sobre la mesa de centro</option>
+          <option value="on the dining table">Sobre la mesa de comedor</option>
+          <option value="on a shelf or sideboard">En un aparador o repisa</option>
+          <option value="on the desk">Sobre el escritorio</option>
+        </select>
+      </label>
+      <button type="button" id="generateMockup" class="fibrea-btn fibrea-btn-dark mt-6 w-full">
+        <i data-lucide="sparkles"></i> Ver en mi espacio
+      </button>
+      <p id="mockupMessage" class="mt-3 text-center text-sm" role="alert"></p>
+    </div>
+
+    <!-- 4. Resultado -->
+    <div class="fibrea-card p-6">
+      <p class="fibrea-label">Visualízala en tu espacio</p>
+      <div id="resultEmpty" class="mt-5 grid aspect-square place-items-center rounded-md border border-dashed border-[var(--border)] p-6 text-center">
+        <p class="fibrea-muted text-sm">Aquí aparecerá tu espacio con la pieza elegida.</p>
+      </div>
+      <div id="resultLoading" hidden>
+        <div class="ai-loading mt-5"></div>
+        <p id="loadingText" class="fibrea-muted mt-3 text-center text-xs">Analizando tu espacio…</p>
+      </div>
+      <div id="mockupResult" hidden>
+        <img id="generatedImage" alt="" class="mt-5 w-full rounded-md">
+        <div class="mt-5 grid gap-3">
+          <button type="button" id="addMockupProduct" class="fibrea-btn fibrea-btn-dark">Añadir al carrito</button>
+          <div class="grid grid-cols-2 gap-3">
+            <a id="downloadMockup" class="fibrea-btn fibrea-btn-outline" download><i data-lucide="download"></i> Descargar</a>
+            <button type="button" id="newMockup" class="fibrea-btn fibrea-btn-outline"><i data-lucide="refresh-cw"></i> Otra vez</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/mockup.js') }}"></script>
+{% endblock %}
