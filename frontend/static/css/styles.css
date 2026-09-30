@@ -275,6 +275,33 @@ button, input, textarea, select { font: inherit; color: inherit; }
   background: radial-gradient(120% 90% at 80% 40%, #2c261f 0%, var(--color-noche) 55%, #0f0d0b 100%);
   color: var(--color-papel);
 }
+.hero-video,
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.hero-video {
+  object-fit: cover;
+  /* Capa propia: sin esto, en pantallas angostas el video quedaba negro bajo la capa oscura. */
+  transform: translateZ(0);
+}
+/* Oscurece el video para que el texto y el isotipo sigan siendo legibles. */
+.hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(20,17,14,.82) 0%, rgba(20,17,14,.55) 55%, rgba(20,17,14,.35) 100%),
+    linear-gradient(180deg, rgba(20,17,14,.25) 0%, transparent 30%, transparent 70%, rgba(20,17,14,.45) 100%);
+}
+.hero-grid { position: relative; z-index: 1; }
+@media (max-width: 899px) {
+  .hero-overlay { background: rgba(20,17,14,.62); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+}
+
 .hero-grid {
   display: grid;
   gap: 2rem;
@@ -311,7 +338,34 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .hero-origin::after { content: ""; width: 3.5rem; height: 1px; background: currentColor; }
 
 @media (min-width: 900px) {
-  .hero-grid { grid-template-columns: 1.1fr .9fr; }
+  .hero-video,
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.hero-video {
+  object-fit: cover;
+  /* Capa propia: sin esto, en pantallas angostas el video quedaba negro bajo la capa oscura. */
+  transform: translateZ(0);
+}
+/* Oscurece el video para que el texto y el isotipo sigan siendo legibles. */
+.hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(20,17,14,.82) 0%, rgba(20,17,14,.55) 55%, rgba(20,17,14,.35) 100%),
+    linear-gradient(180deg, rgba(20,17,14,.25) 0%, transparent 30%, transparent 70%, rgba(20,17,14,.45) 100%);
+}
+.hero-grid { position: relative; z-index: 1; }
+@media (max-width: 899px) {
+  .hero-overlay { background: rgba(20,17,14,.62); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+}
+
+.hero-grid { grid-template-columns: 1.1fr .9fr; }
 }
 
 /* Encabezado de página interior */
@@ -712,4 +766,20 @@ button, input, textarea, select { font: inherit; color: inherit; }
 /* Controles que solo tienen sentido en pantallas táctiles (p. ej. abrir la cámara). */
 @media (hover: hover) and (pointer: fine) {
   .only-touch { display: none !important; }
+}
+
+/* Menú hamburguesa: alterna ☰ / ✕ sin tocar el DOM. */
+#menuButton .menu-icon-open,
+#menuButton .menu-icon-close { display: inline-grid; place-items: center; pointer-events: none; }
+#menuButton .menu-icon-close,
+#menuButton[aria-expanded="true"] .menu-icon-open { display: none; }
+#menuButton[aria-expanded="true"] .menu-icon-close { display: inline-grid; }
+
+/* Evita el zoom por doble toque en botones y enlaces (y el retraso de 300 ms en iOS). */
+a, button, label, input, select, textarea, [role="button"] { touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* iOS hace zoom automático al enfocar campos con letra menor a 16 px. */
+@media (max-width: 767px) {
+  input, select, textarea, .fibrea-input { font-size: 16px !important; }
 }

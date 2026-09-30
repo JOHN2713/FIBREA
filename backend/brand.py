@@ -11,6 +11,8 @@ BRAND = {
     "tagline": "Naturaleza ecuatoriana hecha con alma.",
     "hero_subtitle": "Piezas que nacen de nuestra tierra y encuentran su lugar en la tuya.",
     "origin": "Hecho en Ecuador",
+    # Video de fondo del inicio (mp4, se reproduce en silencio y en loop). Vacío = sin video.
+    "hero_video": "https://tool.perseo.ec/wp-content/uploads/2026/09/fondo-fibrea.mp4",
 
     # Contacto (el número de WhatsApp también se puede definir en .env)
     "whatsapp": os.getenv("WHATSAPP_NUMBER", "593999774777"),

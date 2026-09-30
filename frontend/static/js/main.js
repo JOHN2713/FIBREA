@@ -199,14 +199,15 @@ document.addEventListener("DOMContentLoaded", () => {
     navLinks.classList.toggle("is-open", open);
     menuButton.setAttribute("aria-expanded", open);
     menuButton.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-    menuButton.innerHTML = `<i data-lucide="${open ? "x" : "menu"}"></i>`;
-    refreshIcons();
+    // El ícono ☰/✕ cambia por CSS según aria-expanded. No se reemplaza el HTML del botón:
+    // si el elemento tocado desaparece del DOM, el "clic fuera" de abajo cerraba el menú al instante.
   };
   menuButton?.addEventListener("click", () => setMenu(!navLinks.classList.contains("is-open")));
   // Cerrar el menú al elegir un enlace (p. ej. "/#atelier" no recarga la página) o al tocar fuera.
   navLinks?.querySelectorAll("a").forEach(link => link.addEventListener("click", () => setMenu(false)));
   document.addEventListener("click", event => {
-    if (navLinks?.classList.contains("is-open") && !event.target.closest("#siteNav")) setMenu(false);
+    const nav = document.getElementById("siteNav");
+    if (navLinks?.classList.contains("is-open") && !event.composedPath().includes(nav)) setMenu(false);
   });
 
   // Botones "añadir al carrito" renderizados desde el servidor (inicio).

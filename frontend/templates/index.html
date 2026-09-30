@@ -3,6 +3,12 @@
 {% block content %}
 <!-- Hero -->
 <section class="hero">
+  {% if brand.hero_video %}
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
+    <source src="{{ brand.hero_video }}" type="video/mp4">
+  </video>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  {% endif %}
   <div class="container-fibrea hero-grid">
     <div>
       <h1>Naturaleza<br>ecuatoriana<br>hecha con alma.</h1>
