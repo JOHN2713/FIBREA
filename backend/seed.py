@@ -51,6 +51,20 @@ PRODUCTS = [
         ),
         "available": True,
     },
+    {
+            "name": "Azahar /boutonnière",
+            "slug": "Azahar /boutonnière",
+            "description": "Accesorio para novio - bodas.",
+            "price": 20.00,
+            "image": "/static/images/products/azahar-boutonniere.webp",
+            "category": "Accesorios",
+            "external_url": None,
+            "ai_description": (
+                "Single small boutonnière with white and orange flowers, suitable for a groom at a wedding. "
+                "Keep the flower colors exactly as in the product photo."
+            ),
+            "available": True,
+        },
 ]
 
 
