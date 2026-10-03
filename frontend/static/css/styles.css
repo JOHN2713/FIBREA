@@ -11,6 +11,7 @@
   --color-hoja: #59675A;
   --color-papel: #F4EFE7;
   --color-noche: #1E1B17;
+  --color-nav: #B28D6D;
 
   --surface: #FBF9F5;
   --text-soft: #746F67;
@@ -782,4 +783,29 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* iOS hace zoom automático al enfocar campos con letra menor a 16 px. */
 @media (max-width: 767px) {
   input, select, textarea, .fibrea-input { font-size: 16px !important; }
+}
+
+/* =========================================================
+   Nav con color de marca #B28D6D (todas las páginas, también el menú móvil).
+   El texto va en oscuro: blanco sobre este tono no alcanza contraste legible.
+   ========================================================= */
+.fibrea-nav,
+.fibrea-nav.is-dark {
+  background: var(--color-nav);
+  color: var(--color-noche);
+  border-bottom-color: rgba(30,27,23,.18);
+}
+.fibrea-nav .icon-btn:hover,
+.fibrea-nav.is-dark .icon-btn:hover { background: rgba(30,27,23,.1); }
+.fibrea-nav .cart-count { background: var(--color-noche); color: var(--color-papel); }
+@media (max-width: 767px) {
+  .fibrea-nav,
+  .fibrea-nav.is-dark,
+  .nav-links.is-open,
+  .fibrea-nav.is-dark .nav-links.is-open {
+    background: var(--color-nav);
+    border-bottom-color: rgba(30,27,23,.18);
+  }
+  .nav-links.is-open .fibrea-nav-link,
+  .fibrea-nav.is-dark .nav-links.is-open .fibrea-nav-link { border-bottom-color: rgba(30,27,23,.15); }
 }
